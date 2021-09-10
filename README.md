@@ -27,7 +27,7 @@ Project Features:
 Private Credentials - Users capable of accessing only their own profile and emails
 Compose emails - Users are capable of composing emails and submitting them to other users
 Inbox Capabilities - Users capable of viewing emails for most recently acquired emails and capable of searching through emails
-                     and searching through emails and forwarding the emails to other users.
+and searching through emails and forwarding the emails to other users.
 submit attachments - users capable of submitting image attachements with their emails
 
 
