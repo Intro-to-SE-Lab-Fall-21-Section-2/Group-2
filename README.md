@@ -1,6 +1,6 @@
 # Group-2
 
-Project Name: Waterdog Email Client
+Project Name: AirFox Email Client
 
 Languages used: TBD
 
@@ -20,8 +20,15 @@ Adelyn Lewter - alewter12
 
 Project Description: 
 
-A standard email client allowing users to correspond to one another
-through electronic mail.
+AirFox Email client is a website designed by our team to serve as a basic emailing client, allowing users to contact each other through the use of text based emails as well as through images.
+
+
+Project Features:
+Private Credentials - Users capable of accessing only their own profile and emails
+Compose emails - Users are capable of composing emails and submitting them to other users
+Inbox Capabilities - Users capable of viewing emails for most recently acquired emails and capable of searching through emails
+                     and searching through emails and forwarding the emails to other users.
+submit attachments - users capable of submitting image attachements with their emails
 
 
 Project Objectives:
