@@ -1,7 +1,4 @@
-dist: xenial
+dist: trusty
 language: java
-jdk: oraclejdk13
-addons:
-  apt:
-    packages:
-      - ant
+
+
