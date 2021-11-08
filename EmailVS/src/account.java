@@ -68,13 +68,14 @@ public class account {
     
     public ArrayList<email> search(String input){
         ArrayList<email> results = new ArrayList();
+
         for(email a: inboxList){
-            if(a.getRecipient().equals(input) || a.getSender().equals(input)){
+            if(a.getRecipient().equals(input) || a.getSender().equals(input) || a.getSubjectLine().contains(input) || a.getBody().contains(input)){
                 results.add(a);
             }
         }
         for(email b: outboxList){
-            if(b.getRecipient().equals(input) || b.getSender().equals(input)){
+            if(b.getRecipient().equals(input) || b.getSender().equals(input)|| b.getSubjectLine().contains(input) || b.getBody().contains(input)){
                 results.add(b);
             }
         }
@@ -96,7 +97,15 @@ public class account {
     public void removeDraft(email toDelete){
         draftList.remove(toDelete);
     }
-    
+
+    public void removeInboxEmail(email toDelete){
+        inboxList.remove(toDelete);
+    }
+
+    public void removeOutboxEmail(email toDelete){
+        outboxList.remove(toDelete);
+    }   
+
     //Login
     public void login(){
         isLoggedIn = true;
