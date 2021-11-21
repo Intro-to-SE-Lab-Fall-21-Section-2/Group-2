@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ import javax.swing.DefaultListModel;
 //what button or event they are activated by 
 
 public class accountManager {
-    private Map <String, account> accountList = new HashMap<String, account>();
+    protected Map <String, account> accountList = new HashMap<String, account>();
     
     public static void main (String [] args) {
         // I had to create an instance of the main class here because of the rules between static and non static methods
@@ -93,7 +91,7 @@ public class accountManager {
         return true;
     }
     
-    private void homeScreen(String username){
+    protected void homeScreen(String username){
         account user = accountList.get(username);
         JFrame InboxFrame = new JFrame("Inbox");
         JTabbedPane JTabbedPane1 = new JTabbedPane();
@@ -348,6 +346,7 @@ public class accountManager {
                     int index = draftDisplayList.locationToIndex(mouseEvent.getPoint());
                     if(index >= 0){
                         email openDraft = user.getDraftEmail(index);
+                        //Prompting the delete option
                         int y = JOptionPane.showConfirmDialog(InboxFrame, "Would you like to delete this draft?\n Click no to open.", "Open Draft", JOptionPane.YES_NO_OPTION);
                         if(y == JOptionPane.YES_OPTION){
                             user.removeDraft(openDraft);
@@ -377,44 +376,55 @@ public class accountManager {
                     if(index >= 0){
                         //Fetching email
                         email openEmail = user.getOutboxEmail(index);
-                    
-                        //Attachment
-                        if (openEmail.getHasAttch()){
-                            int y = JOptionPane.showConfirmDialog(InboxFrame, "This email has an attachment. \nWould you like to open it?", "Attachment", JOptionPane.YES_NO_OPTION);
-                            if(y == JOptionPane.YES_OPTION){
-                                try {  
-                                    File attachment = openEmail.getAttachment();
-                                    if(Desktop.isDesktopSupported()){  
-                                        Desktop desktop = Desktop.getDesktop(); 
-                                        if(attachment.exists()){
-                                            desktop.open(attachment);
-                                        }  
-                                    }  
-                                    else{
-                                        JOptionPane.showMessageDialog(InboxFrame, "Desktop is not Supported.");
-                                    } 
-                                }
-                                catch(Exception e){  
-                                    JOptionPane.showMessageDialog(InboxFrame, "Error: Something went wrong");
-                                }  
-                            }
+                        //Prompting the delete option
+                        int y = JOptionPane.showConfirmDialog(InboxFrame, "Would you like to delete this email?\n Click no to open.", "Open Email", JOptionPane.YES_NO_OPTION);
+                        if(y == JOptionPane.YES_OPTION){
+                            user.removeOutboxEmail(openEmail);
+                            outboxDisplayList.setModel(new javax.swing.AbstractListModel<String>() {
+                                String[] strings = user.getOutboxArray();
+                                public int getSize() { return strings.length; }
+                                public String getElementAt(int i) { return strings[i]; }
+                            });
                         }
-                    
-                        //Creating Dialog for email display
-                        Object[] options = {
-                            "Forward",
-                            "Close"
-                        };
-                        int option = JOptionPane.showOptionDialog(InboxFrame, "Recipient: " 
-                                + openEmail.getRecipient() + "\nSubject: " + 
-                                openEmail.getSubjectLine() + "\n" + openEmail.getBody(),"Outbox", JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
-                        //Forward option
-                        if(option == 0){
-                            recipientField.setText("");
-                            subjectField.setText("Fwd: " + openEmail.getSubjectLine());
-                            bodyField.setText("Sender: " + openEmail.getSender() + "\nRecipient: " 
-                                    + openEmail.getRecipient() + "\nFwd: " + openEmail.getBody() + "\n");
+                        else{
+                            //Attachment
+                            if (openEmail.getHasAttch()){
+                                int g = JOptionPane.showConfirmDialog(InboxFrame, "This email has an attachment. \nWould you like to open it?", "Attachment", JOptionPane.YES_NO_OPTION);
+                                if(g == JOptionPane.YES_OPTION){
+                                    try {  
+                                        File attachment = openEmail.getAttachment();
+                                        if(Desktop.isDesktopSupported()){  
+                                            Desktop desktop = Desktop.getDesktop(); 
+                                            if(attachment.exists()){
+                                                desktop.open(attachment);
+                                            }  
+                                        }  
+                                        else{
+                                            JOptionPane.showMessageDialog(InboxFrame, "Desktop is not Supported.");
+                                        } 
+                                    }
+                                    catch(Exception e){  
+                                        JOptionPane.showMessageDialog(InboxFrame, "Error: Something went wrong");
+                                    }  
+                                }
+                            }
+                        
+                            //Creating Dialog for email display
+                            Object[] options = {
+                                "Forward",
+                                "Close"
+                            };
+                            int option = JOptionPane.showOptionDialog(InboxFrame, "Recipient: " 
+                                    + openEmail.getRecipient() + "\nSubject: " + 
+                                    openEmail.getSubjectLine() + "\n" + openEmail.getBody(),"Outbox", JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+                            //Forward option
+                            if(option == 0){
+                                recipientField.setText("");
+                                subjectField.setText("Fwd: " + openEmail.getSubjectLine());
+                                bodyField.setText("Sender: " + openEmail.getSender() + "\nRecipient: " 
+                                        + openEmail.getRecipient() + "\nFwd: " + openEmail.getBody() + "\n");
+                            }
                         }
                     }
                 }
@@ -431,44 +441,55 @@ public class accountManager {
                     if(index >= 0){
                         //Fetching the email
                         email openEmail = user.getInboxEmail(index);
-                    
-                        //Checking for attachement 
-                        if (openEmail.getHasAttch()){
-                            int y = JOptionPane.showConfirmDialog(InboxFrame, "This email has an attachment. \nWould you like to open it?", "Attachment", JOptionPane.YES_NO_OPTION);
-                            if(y == JOptionPane.YES_OPTION){
-                                try {  
-                                    File attachment = openEmail.getAttachment();
-                                    if(Desktop.isDesktopSupported()){  
-                                        Desktop desktop = Desktop.getDesktop(); 
-                                        if(attachment.exists()){
-                                            desktop.open(attachment);
-                                        }  
-                                    }  
-                                    else{
-                                        JOptionPane.showMessageDialog(InboxFrame, "Desktop is not Supported.");
-                                    } 
-                                }
-                                catch(Exception e){  
-                                    JOptionPane.showMessageDialog(InboxFrame, "Error: Something went wrong");
-                                }  
-                            }
-                        
+                        //Prompting the delete option
+                        int y = JOptionPane.showConfirmDialog(InboxFrame, "Would you like to delete this email?\n Click no to open.", "Open Email", JOptionPane.YES_NO_OPTION);
+                        if(y == JOptionPane.YES_OPTION){
+                            user.removeInboxEmail(openEmail);
+                            inboxDisplayList.setModel(new javax.swing.AbstractListModel<String>() {
+                                String[] strings = user.getInboxArray();
+                                public int getSize() { return strings.length; }
+                                public String getElementAt(int i) { return strings[i]; }
+                            });
                         }
-                        //Creating Dialog for the email
-                        Object[] options = {
-                            "Forward",
-                            "Close"
-                        };
-                        int option = JOptionPane.showOptionDialog(InboxFrame, "Recipient: " 
-                                + openEmail.getRecipient() + "\nSubject: " + 
-                                openEmail.getSubjectLine() + "\n" + openEmail.getBody(),"Inbox", JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
-                        //Forward option
-                        if(option == 0){
-                            recipientField.setText("");
-                            subjectField.setText("Fwd: " + openEmail.getSubjectLine());
-                            bodyField.setText("Sender: " + openEmail.getSender() + "\nRecipient: " 
-                                    + openEmail.getRecipient() + "\nFwd: " + openEmail.getBody() + "\n");
+                        else{
+                            //Checking for attachement 
+                            if (openEmail.getHasAttch()){
+                                int w = JOptionPane.showConfirmDialog(InboxFrame, "This email has an attachment. \nWould you like to open it?", "Attachment", JOptionPane.YES_NO_OPTION);
+                                if(w == JOptionPane.YES_OPTION){
+                                    try {  
+                                        File attachment = openEmail.getAttachment();
+                                        if(Desktop.isDesktopSupported()){  
+                                            Desktop desktop = Desktop.getDesktop(); 
+                                            if(attachment.exists()){
+                                                desktop.open(attachment);
+                                            }  
+                                        }  
+                                        else{
+                                            JOptionPane.showMessageDialog(InboxFrame, "Desktop is not Supported.");
+                                        } 
+                                    }
+                                    catch(Exception e){  
+                                        JOptionPane.showMessageDialog(InboxFrame, "Error: Something went wrong");
+                                    }  
+                                }
+                            
+                            }
+                            //Creating Dialog for the email
+                            Object[] options = {
+                                "Forward",
+                                "Close"
+                            };
+                            int option = JOptionPane.showOptionDialog(InboxFrame, "From: " 
+                                    + openEmail.getSender() + "\nSubject: " + 
+                                    openEmail.getSubjectLine() + "\n" + openEmail.getBody(),"Inbox", JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+                            //Forward option
+                            if(option == 0){
+                                recipientField.setText("");
+                                subjectField.setText("Fwd: " + openEmail.getSubjectLine());
+                                bodyField.setText("Sender: " + openEmail.getSender() + "\nRecipient: " 
+                                        + openEmail.getRecipient() + "\nFwd: " + openEmail.getBody() + "\n");
+                            }
                         }
                     }
                 }
